@@ -1,0 +1,9 @@
+[submodule "Agent-S"]
+	path = Agent-S
+	url = https://github.com/siddsharma18/Agent-S.git
+[submodule "android_world"]
+	path = android_world
+	url = https://github.com/siddsharma18/android_world.git
+[submodule "android_env"]
+	path = android_env
+	url = https://github.com/siddsharma18/android_env.git
