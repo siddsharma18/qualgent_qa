@@ -1,0 +1,171 @@
+[
+  {
+    "goal": "Turn off Wi-Fi",
+    "status": "success",
+    "success_rate": 1.0,
+    "execution_time": 2.5,
+    "iterations": 1,
+    "completed_subgoals": [
+      "Open Settings",
+      "Toggle Wi-Fi"
+    ],
+    "failed_subgoals": [],
+    "reason": null,
+    "planning_result": {
+      "status": "success",
+      "planning_time": 0.1,
+      "confidence": 0.9,
+      "strategies_used": [
+        "template_based_planning",
+        "semantic_planning"
+      ]
+    },
+    "stats": {
+      "total_replans": 0,
+      "total_retries": 0,
+      "planner_stats": {
+        "total_plans": 1,
+        "successful_plans": 1,
+        "average_planning_time": 0.1
+      },
+      "executor_stats": {
+        "total_executions": 2,
+        "successful_executions": 2,
+        "average_execution_time": 1.25,
+        "total_retries": 0
+      },
+      "verifier_stats": {
+        "total_verifications": 2,
+        "successful_verifications": 2,
+        "average_verification_time": 0.05
+      }
+    }
+  },
+  {
+    "goal": "Enable Bluetooth and open Developer Options",
+    "status": "failed",
+    "success_rate": 0.5,
+    "execution_time": 8.2,
+    "iterations": 3,
+    "completed_subgoals": [
+      "Open Settings",
+      "Enable Bluetooth"
+    ],
+    "failed_subgoals": [
+      "Open Developer Options"
+    ],
+    "reason": "Developer Options not found",
+    "planning_result": {
+      "status": "success",
+      "planning_time": 0.3,
+      "confidence": 0.8,
+      "strategies_used": [
+        "template_based_planning",
+        "adaptive_planning"
+      ]
+    },
+    "stats": {
+      "total_replans": 2,
+      "total_retries": 3,
+      "planner_stats": {
+        "total_plans": 3,
+        "successful_plans": 3,
+        "average_planning_time": 0.3
+      },
+      "executor_stats": {
+        "total_executions": 5,
+        "successful_executions": 3,
+        "average_execution_time": 1.64,
+        "total_retries": 3
+      },
+      "verifier_stats": {
+        "total_verifications": 5,
+        "successful_verifications": 3,
+        "average_verification_time": 0.08
+      }
+    }
+  },
+  {
+    "goal": "Configure device settings",
+    "status": "success",
+    "success_rate": 1.0,
+    "execution_time": 4.1,
+    "iterations": 2,
+    "completed_subgoals": [
+      "Open Settings",
+      "Navigate to System",
+      "Configure Display"
+    ],
+    "failed_subgoals": [],
+    "reason": null,
+    "planning_result": {
+      "status": "success",
+      "planning_time": 0.2,
+      "confidence": 0.85,
+      "strategies_used": [
+        "semantic_planning",
+        "template_based_planning"
+      ]
+    },
+    "stats": {
+      "total_replans": 0,
+      "total_retries": 1,
+      "planner_stats": {
+        "total_plans": 1,
+        "successful_plans": 1,
+        "average_planning_time": 0.2
+      },
+      "executor_stats": {
+        "total_executions": 3,
+        "successful_executions": 3,
+        "average_execution_time": 1.37,
+        "total_retries": 1
+      },
+      "verifier_stats": {
+        "total_verifications": 3,
+        "successful_verifications": 3,
+        "average_verification_time": 0.06
+      }
+    }
+  },
+  {
+    "goal": "Make coffee with the phone",
+    "status": "failed",
+    "success_rate": 0.0,
+    "execution_time": 1.2,
+    "iterations": 1,
+    "completed_subgoals": [],
+    "failed_subgoals": [
+      "Open Coffee App"
+    ],
+    "reason": "Impossible goal",
+    "planning_result": {
+      "status": "success",
+      "planning_time": 0.1,
+      "confidence": 0.9,
+      "strategies_used": [
+        "fallback_planning"
+      ]
+    },
+    "stats": {
+      "total_replans": 0,
+      "total_retries": 0,
+      "planner_stats": {
+        "total_plans": 1,
+        "successful_plans": 1,
+        "average_planning_time": 0.1
+      },
+      "executor_stats": {
+        "total_executions": 1,
+        "successful_executions": 0,
+        "average_execution_time": 1.2,
+        "total_retries": 0
+      },
+      "verifier_stats": {
+        "total_verifications": 1,
+        "successful_verifications": 0,
+        "average_verification_time": 0.01
+      }
+    }
+  }
+]

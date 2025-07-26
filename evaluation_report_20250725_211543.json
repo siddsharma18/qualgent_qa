@@ -1,0 +1,56 @@
+{
+  "total_goals": 4,
+  "successful_goals": 2,
+  "failed_goals": 2,
+  "flaky_goals": 1,
+  "overall_success_rate": 0.5,
+  "avg_planning_time": 0.175,
+  "avg_execution_time": 3.9999999999999996,
+  "avg_verification_time": 0.0,
+  "avg_total_time": 3.9999999999999996,
+  "total_replans": 0,
+  "total_retries": 0,
+  "avg_retries_per_goal": 0.0,
+  "avg_replans_per_goal": 0.0,
+  "planner_performance": {
+    "agent_name": "PlannerAgent",
+    "total_operations": 4,
+    "success_rate": 1.0,
+    "avg_operation_time": 0.175,
+    "error_count": 0
+  },
+  "executor_performance": {
+    "agent_name": "ExecutorAgent",
+    "total_operations": 4,
+    "success_rate": 0.5,
+    "avg_operation_time": 3.9999999999999996,
+    "error_count": 0
+  },
+  "verifier_performance": {
+    "agent_name": "VerifierAgent",
+    "total_operations": 9,
+    "success_rate": 0.7777777777777778,
+    "avg_operation_time": 0.0,
+    "error_count": 0
+  },
+  "flaky_subgoals": [],
+  "issues": [],
+  "strengths": [
+    "Excellent planning accuracy",
+    "Fast execution times",
+    "Efficient planning"
+  ],
+  "weaknesses": [
+    "Low success rate",
+    "Flaky behavior detected in 1 goals",
+    "Repeated failures in specific goals"
+  ],
+  "recommendations": [
+    "Improve overall system reliability",
+    "Investigate and fix flaky behavior",
+    "Focus testing on commonly failing goals"
+  ],
+  "test_duration": 0.00034689903259277344,
+  "test_timestamp": "2025-07-25T21:15:43.418972",
+  "configuration_used": "default"
+}

@@ -1,0 +1,31 @@
+name: "SimpleTestTask"
+description: "A simple test task for AndroidEnv"
+id: "simple_test_task"
+
+setup_steps {
+  adb_request {
+    generic {
+      args: "shell"
+      args: "am"
+      args: "start"
+      args: "-n"
+      args: "com.android.settings/.Settings"
+    }
+  }
+}
+
+reset_steps {
+  adb_request {
+    generic {
+      args: "shell"
+      args: "am"
+      args: "start"
+      args: "-n"
+      args: "com.android.settings/.Settings"
+    }
+  }
+}
+
+expected_app_screen {
+  activity: "com.android.settings/.Settings"
+} 
