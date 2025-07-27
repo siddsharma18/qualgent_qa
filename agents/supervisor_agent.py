@@ -167,7 +167,7 @@ class SupervisorAgent:
         start_time = time.time()
         self.stats['total_evaluations'] += 1
         
-        self.logger.info("Supervisor", "Starting log evaluation", {
+        self.logger.info("[Supervisor] Starting log evaluation", {
             "log_path": log_path,
             "enable_visual_analysis": self.enable_visual_analysis
         })
@@ -193,7 +193,7 @@ class SupervisorAgent:
             self.stats['total_evaluations']
         )
         
-        self.logger.info("Supervisor", "Evaluation complete", {
+        self.logger.info("[Supervisor] Evaluation complete", {
             "total_goals": report.total_goals,
             "success_rate": report.overall_success_rate,
             "issues_found": len(report.issues),
@@ -530,6 +530,142 @@ class SupervisorAgent:
         
         return patterns
     
+    def _detect_flaky_behavior(self, logs: List[Dict]) -> Dict[str, Any]:
+        """Enhanced flaky behavior detection with multiple strategies."""
+        flaky_patterns = {
+            'goal_level': {},
+            'subgoal_level': {},
+            'temporal_patterns': {},
+            'confidence_fluctuations': {},
+            'execution_time_variance': {}
+        }
+        
+        # Track success/failure patterns for each goal
+        goal_patterns = {}
+        for log in logs:
+            goal = log.get('goal', 'unknown')
+            status = log.get('status', 'unknown')
+            
+            if goal not in goal_patterns:
+                goal_patterns[goal] = {'attempts': [], 'success_count': 0, 'total_count': 0}
+            
+            goal_patterns[goal]['attempts'].append(status == 'success')
+            goal_patterns[goal]['total_count'] += 1
+            if status == 'success':
+                goal_patterns[goal]['success_count'] += 1
+        
+        # Detect flaky goals (inconsistent success/failure patterns)
+        for goal, pattern in goal_patterns.items():
+            if pattern['total_count'] >= 3:  # Need at least 3 attempts to detect flakiness
+                success_rate = pattern['success_count'] / pattern['total_count']
+                # Flaky if success rate is between 20% and 80% (neither consistently failing nor passing)
+                if 0.2 <= success_rate <= 0.8:
+                    flaky_patterns['goal_level'][goal] = {
+                        'success_rate': success_rate,
+                        'total_attempts': pattern['total_count'],
+                        'pattern': pattern['attempts'],
+                        'flaky_score': self._calculate_flaky_score(pattern['attempts'])
+                    }
+        
+        # Detect subgoal-level flakiness
+        subgoal_patterns = {}
+        for log in logs:
+            completed = log.get('completed_subgoals', [])
+            failed = log.get('failed_subgoals', [])
+            
+            for subgoal in completed + failed:
+                if subgoal not in subgoal_patterns:
+                    subgoal_patterns[subgoal] = {'success': 0, 'failure': 0}
+                
+                if subgoal in completed:
+                    subgoal_patterns[subgoal]['success'] += 1
+                else:
+                    subgoal_patterns[subgoal]['failure'] += 1
+        
+        for subgoal, pattern in subgoal_patterns.items():
+            total = pattern['success'] + pattern['failure']
+            if total >= 3:
+                success_rate = pattern['success'] / total
+                if 0.2 <= success_rate <= 0.8:
+                    flaky_patterns['subgoal_level'][subgoal] = {
+                        'success_rate': success_rate,
+                        'total_attempts': total,
+                        'success_count': pattern['success'],
+                        'failure_count': pattern['failure']
+                    }
+        
+        # Detect temporal patterns (time-based flakiness)
+        execution_times = [log.get('execution_time', 0) for log in logs if log.get('execution_time')]
+        if execution_times:
+            import statistics
+            mean_time = statistics.mean(execution_times)
+            std_time = statistics.stdev(execution_times) if len(execution_times) > 1 else 0
+            # High variance in execution time can indicate flaky behavior
+            if std_time > mean_time * 0.5:  # Standard deviation > 50% of mean
+                flaky_patterns['execution_time_variance'] = {
+                    'mean_time': mean_time,
+                    'std_time': std_time,
+                    'variance_ratio': std_time / mean_time if mean_time > 0 else 0,
+                    'high_variance_indicator': True
+                }
+        
+        return flaky_patterns
+    
+    def _calculate_flaky_score(self, attempts: List[bool]) -> float:
+        """Calculate a flakiness score based on success/failure pattern."""
+        if len(attempts) < 2:
+            return 0.0
+        
+        # Count transitions between success and failure
+        transitions = sum(1 for i in range(1, len(attempts)) if attempts[i] != attempts[i-1])
+        max_transitions = len(attempts) - 1
+        
+        # More transitions = more flaky
+        return transitions / max_transitions if max_transitions > 0 else 0.0
+    
+    def _generate_stability_recommendations(self, analysis: Dict[str, Any]) -> List[str]:
+        """Generate specific recommendations to fix flaky behavior."""
+        recommendations = []
+        
+        # Check for flaky patterns
+        flaky_patterns = analysis.get('patterns', {}).get('flaky_patterns', {})
+        
+        if flaky_patterns.get('goal_level'):
+            recommendations.append("Implement goal-level retry strategies with exponential backoff")
+            recommendations.append("Add pre-execution environment validation checks")
+            
+        if flaky_patterns.get('subgoal_level'):
+            recommendations.append("Enhance subgoal execution with better element detection")
+            recommendations.append("Implement subgoal-specific fallback strategies")
+            
+        if flaky_patterns.get('execution_time_variance'):
+            recommendations.append("Implement adaptive timeout mechanisms")
+            recommendations.append("Add UI stability checks before action execution")
+            
+        # Check for repeated failure patterns
+        issues = analysis.get('issues', [])
+        repeated_failures = [issue for issue in issues if 'repeated' in issue.get('type', '').lower()]
+        
+        if repeated_failures:
+            recommendations.append("Investigate root causes of repeated failures")
+            recommendations.append("Implement alternative execution paths for failing scenarios")
+            recommendations.append("Add comprehensive error context logging")
+        
+        # Check timing issues
+        timing_analysis = analysis.get('timing', {})
+        if timing_analysis.get('timeout_count', 0) > 0:
+            recommendations.append("Increase timeout values for slow operations")
+            recommendations.append("Implement progressive timeout strategies")
+        
+        # Agent-specific recommendations
+        agents = analysis.get('agents', {})
+        for agent_name, agent_data in agents.items():
+            success_rate = agent_data.get('success_rate', 1.0)
+            if success_rate < 0.8:
+                recommendations.append(f"Improve {agent_name} reliability (current: {success_rate:.1%})")
+        
+        return list(set(recommendations))  # Remove duplicates
+    
     def _generate_comprehensive_report(self, analysis: Dict[str, Any], start_time: float) -> EvaluationReport:
         """Generate comprehensive evaluation report."""
         goals_analysis = analysis['goals']
@@ -671,7 +807,7 @@ class SupervisorAgent:
         with open(md_path, "w") as f:
             f.write(self._generate_markdown_report(report))
         
-        self.logger.info("Supervisor", "Reports saved", {
+        self.logger.info("[Supervisor] Reports saved", {
             "json_path": json_path,
             "markdown_path": md_path
         })

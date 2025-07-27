@@ -25,6 +25,13 @@ class Subgoal:
     required_elements: List[str]
     alternative_approaches: List[str]
     confidence: float
+    retry_strategy: str = "standard"
+    max_retries: int = 3
+    fallback_subgoals: List[str] = None
+
+    def __post_init__(self):
+        if self.fallback_subgoals is None:
+            self.fallback_subgoals = []
 
 @dataclass
 class PlanningResult:
@@ -37,6 +44,12 @@ class PlanningResult:
     confidence: float
     plan_complexity: str
     alternative_plans: List[List[Subgoal]]
+    risk_assessment: Dict[str, float] = None
+    stability_score: float = 0.0
+
+    def __post_init__(self):
+        if self.risk_assessment is None:
+            self.risk_assessment = {}
 
 class PlannerAgent:
     """
@@ -49,9 +62,12 @@ class PlannerAgent:
                  enable_template_matching: bool = True,
                  enable_semantic_planning: bool = True,
                  enable_adaptive_planning: bool = True,
-                 max_planning_time: float = 30.0,
-                 min_confidence: float = 0.5,
-                 enable_plan_optimization: bool = True):
+                 enable_fallback_planning: bool = True,
+                 enable_confidence_weighting: bool = True,
+                 min_confidence_threshold: float = 0.4,
+                 planning_timeout: float = 30.0,
+                 enable_stability_scoring: bool = True,
+                 enable_risk_assessment: bool = True):
         """
         Initialize the planner agent.
         
@@ -68,9 +84,14 @@ class PlannerAgent:
         self.enable_template_matching = enable_template_matching
         self.enable_semantic_planning = enable_semantic_planning
         self.enable_adaptive_planning = enable_adaptive_planning
-        self.max_planning_time = max_planning_time
-        self.min_confidence = min_confidence
-        self.enable_plan_optimization = enable_plan_optimization
+        self.enable_fallback_planning = enable_fallback_planning
+        self.enable_confidence_weighting = enable_confidence_weighting
+        self.min_confidence_threshold = min_confidence_threshold
+        self.planning_timeout = planning_timeout
+        self.enable_stability_scoring = enable_stability_scoring
+        self.enable_risk_assessment = enable_risk_assessment
+        self.enable_plan_optimization = True  # Always enable for compatibility
+        self.min_confidence = min_confidence_threshold  # Alias for backward compatibility
         
         # Track planning statistics
         self.stats = {
@@ -196,6 +217,16 @@ class PlannerAgent:
         """
         start_time = time.time()
         self.stats['total_plans'] += 1
+        
+        # Safety check: truncate overly long goals to prevent recursion
+        if len(goal) > 500:
+            self.logger.warning("Planner", f"Goal too long ({len(goal)} chars), truncating")
+            goal = goal[:500] + "..."
+        
+        # Safety check: prevent recursive subgoal descriptions
+        if "Subgoal(" in goal:
+            self.logger.warning("Planner", "Detected recursive subgoal in goal, cleaning")
+            goal = "Complete the requested task"
         
         # Log planning start
         self.logger.info("Planner", "Planning started", 
@@ -403,7 +434,7 @@ class PlannerAgent:
             ),
             Subgoal(
                 name="Search for Goal",
-                description=f"Search for settings related to '{goal}'",
+                description=f"Search for settings related to the task",
                 priority=2,
                 dependencies=["Open Settings"],
                 estimated_duration=3.0,
@@ -413,7 +444,7 @@ class PlannerAgent:
             ),
             Subgoal(
                 name="Execute Action",
-                description=f"Perform the required action for '{goal}'",
+                description="Perform the required action for the task",
                 priority=3,
                 dependencies=["Search for Goal"],
                 estimated_duration=2.0,

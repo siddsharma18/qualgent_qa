@@ -240,20 +240,23 @@ class RobustAgentLoop:
             enable_template_matching=self.config.planner.enable_template_matching,
             enable_semantic_planning=self.config.planner.enable_semantic_planning,
             enable_adaptive_planning=self.config.planner.enable_adaptive_planning,
-            max_planning_time=self.config.planner.max_planning_time,
-            min_confidence=self.config.planner.min_confidence,
-            enable_plan_optimization=self.config.planner.enable_plan_optimization
+            planning_timeout=getattr(self.config.planner, 'max_planning_time', 30.0),
+            min_confidence_threshold=getattr(self.config.planner, 'min_confidence', 0.4),
+            enable_stability_scoring=True,
+            enable_risk_assessment=True
         )
         
         self.executor = ExecutorAgent(
             env=env,
             logger=self.logger,
-            max_retries=self.config.executor.max_retries,
-            retry_delay=self.config.executor.retry_delay,
-            action_timeout=self.config.executor.action_timeout,
-            ui_settle_time=self.config.executor.ui_settle_time,
-            enable_validation=self.config.executor.enable_validation,
-            min_confidence=self.config.executor.min_confidence
+            max_retries=getattr(self.config.executor, 'max_retries', 5),
+            retry_delay=getattr(self.config.executor, 'retry_delay', 1.5),
+            action_timeout=getattr(self.config.executor, 'action_timeout', 15.0),
+            ui_settle_time=getattr(self.config.executor, 'ui_settle_time', 2.0),
+            enable_validation=getattr(self.config.executor, 'enable_validation', True),
+            min_confidence=getattr(self.config.executor, 'min_confidence', 0.3),
+            enable_adaptive_retry=True,
+            enable_stability_check=True
         )
         
         self.verifier = VerifierAgent(
@@ -378,10 +381,10 @@ class RobustAgentLoop:
                     
                     # Replan
                     replan_result = self.planner.replan(
-                        goal, 
-                        completed_subgoals, 
-                        failed_subgoals, 
-                        failure_context
+                        current_subgoal.name,  # failed_subgoal
+                        [sg.name for sg in completed_subgoals],  # previous_subgoals  
+                        goal,  # original goal
+                        failure_context  # context
                     )
                     self.stats['total_replans'] += 1
                     
@@ -584,4 +587,4 @@ if __name__ == "__main__":
     except Exception as e:
         print(f"❌ Full integration test failed with error: {e}")
         import traceback
-        traceback.print_exc() 
+        traceback.print_exc()

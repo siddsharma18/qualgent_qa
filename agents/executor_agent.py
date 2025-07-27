@@ -15,6 +15,9 @@ class ExecutionResult:
     element_id: Optional[str] = None
     confidence: float = 0.0
     execution_time: float = 0.0
+    retry_strategy_used: Optional[str] = None
+    stability_score: float = 0.0
+    ui_changes_detected: bool = False
 
 class ExecutorAgent:
     """
@@ -25,12 +28,15 @@ class ExecutorAgent:
     def __init__(self, 
                  env, 
                  logger: Optional[QALogger] = None,
-                 max_retries: int = 3,
-                 retry_delay: float = 2.0,
-                 action_timeout: float = 10.0,
-                 ui_settle_time: float = 1.5,
+                 max_retries: int = 5,
+                 retry_delay: float = 1.5,
+                 action_timeout: float = 15.0,
+                 ui_settle_time: float = 2.0,
                  enable_validation: bool = True,
-                 min_confidence: float = 0.3):
+                 min_confidence: float = 0.3,
+                 enable_adaptive_retry: bool = True,
+                 enable_stability_check: bool = True,
+                 max_ui_wait_time: float = 10.0):
         """
         Initialize the executor agent.
         
@@ -52,6 +58,9 @@ class ExecutorAgent:
         self.ui_settle_time = ui_settle_time
         self.enable_validation = enable_validation
         self.min_confidence = min_confidence
+        self.enable_adaptive_retry = enable_adaptive_retry
+        self.enable_stability_check = enable_stability_check
+        self.max_ui_wait_time = max_ui_wait_time
         
         # Initialize UI parser with custom settings
         self.ui_parser = UIParser(min_confidence=min_confidence)

@@ -1,0 +1,296 @@
+{
+  "validation_timestamp": "2025-07-27T00:27:54.912036",
+  "component_tests": {
+    "planner_agent": {
+      "status": "pass",
+      "confidence": 0.9,
+      "subgoals_generated": 1,
+      "strategies_used": [
+        "_template_based_planning",
+        "_semantic_planning",
+        "_adaptive_planning",
+        "_fallback_planning"
+      ],
+      "stability_features": {
+        "risk_assessment": true,
+        "stability_score": true
+      }
+    },
+    "executor_agent": {
+      "status": "fail",
+      "confidence": 0.0,
+      "attempts": 6,
+      "stability_features": {
+        "retry_strategy_used": true,
+        "stability_score": true,
+        "ui_changes_detected": true
+      }
+    },
+    "verifier_agent": {
+      "status": "fail",
+      "confidence": 0.1125,
+      "strategies_used": [
+        "_ui_change_verification",
+        "_subgoal_presence_verification",
+        "_state_transition_verification",
+        "_element_interaction_verification",
+        "_semantic_verification"
+      ],
+      "stability_features": {
+        "stability_score": true,
+        "false_positive_risk": true,
+        "alternative_interpretations": true
+      }
+    },
+    "supervisor_agent": {
+      "status": "pass",
+      "total_goals": 4,
+      "success_rate": 0.5,
+      "flaky_detection": {
+        "flaky_goals_detected": 1,
+        "flaky_subgoals": 0,
+        "enhanced_detection": true
+      }
+    }
+  },
+  "flaky_behavior_tests": {
+    "Turn off Wi-Fi": {
+      "executions": [
+        {
+          "attempt": 1,
+          "status": "success",
+          "execution_time": 1.5017948150634766,
+          "stability_score": 1.0,
+          "enhanced_execution": true
+        },
+        {
+          "attempt": 2,
+          "status": "failed",
+          "execution_time": 1.5011639595031738,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        },
+        {
+          "attempt": 3,
+          "status": "failed",
+          "execution_time": 1.5010476112365723,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        }
+      ],
+      "consistency_score": 0.3333333333333333,
+      "is_stable": false,
+      "improvements_applied": true
+    },
+    "Enable Bluetooth": {
+      "executions": [
+        {
+          "attempt": 1,
+          "status": "failed",
+          "execution_time": 7.505743980407715,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        },
+        {
+          "attempt": 2,
+          "status": "failed",
+          "execution_time": 7.504984140396118,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        },
+        {
+          "attempt": 3,
+          "status": "failed",
+          "execution_time": 7.50462532043457,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        }
+      ],
+      "consistency_score": 0.0,
+      "is_stable": false,
+      "improvements_applied": true
+    },
+    "Configure device settings": {
+      "executions": [
+        {
+          "attempt": 1,
+          "status": "failed",
+          "execution_time": 1.5011324882507324,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        },
+        {
+          "attempt": 2,
+          "status": "failed",
+          "execution_time": 1.5010733604431152,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        },
+        {
+          "attempt": 3,
+          "status": "failed",
+          "execution_time": 1.501035451889038,
+          "stability_score": 0.5,
+          "enhanced_execution": true
+        }
+      ],
+      "consistency_score": 0.0,
+      "is_stable": false,
+      "improvements_applied": true
+    },
+    "flaky_detection": {
+      "detector_available": true,
+      "test_flaky_score": 0.8739237461911307,
+      "detection_working": true
+    }
+  },
+  "android_in_wild_integration": {
+    "dataset_setup": {
+      "status": "success",
+      "path": "/tmp/android_in_wild_8z1t7sjz"
+    },
+    "selected_videos": [
+      "settings_wifi_toggle_001",
+      "bluetooth_pairing_002",
+      "brightness_adjustment_003",
+      "app_installation_004",
+      "notification_management_005"
+    ],
+    "analysis_results": [
+      {
+        "video_id": "settings_wifi_toggle_001",
+        "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+        "accuracy_score": 0.25,
+        "robustness_score": 1.0,
+        "generalization_score": 0.2850528573989868,
+        "agent_status": "success"
+      },
+      {
+        "video_id": "bluetooth_pairing_002",
+        "task_prompt": "Enable Bluetooth and search for nearby devices",
+        "accuracy_score": 0.25,
+        "robustness_score": 0.26666666666666666,
+        "generalization_score": 0.25494955406034175,
+        "agent_status": "failed"
+      },
+      {
+        "video_id": "brightness_adjustment_003",
+        "task_prompt": "Adjust screen brightness using quick settings",
+        "accuracy_score": 0.25,
+        "robustness_score": 1.0,
+        "generalization_score": 0.2850624179840088,
+        "agent_status": "success"
+      },
+      {
+        "video_id": "app_installation_004",
+        "task_prompt": "Install a calculator app from the Play Store",
+        "accuracy_score": 0.2,
+        "robustness_score": 1.0,
+        "generalization_score": 0.22428720223903653,
+        "agent_status": "success"
+      },
+      {
+        "video_id": "notification_management_005",
+        "task_prompt": "Manage notification settings for an app",
+        "accuracy_score": 0.25,
+        "robustness_score": 1.0,
+        "generalization_score": 0.285050151348114,
+        "agent_status": "success"
+      }
+    ],
+    "evaluation": {
+      "aggregate_metrics": {
+        "total_videos_analyzed": 5,
+        "average_accuracy": 0.24,
+        "average_robustness": 0.8533333333333333,
+        "average_generalization": 0.2668804366060976,
+        "overall_performance": 0.4534045899798103
+      },
+      "strengths": [
+        "Robust execution across different scenarios"
+      ],
+      "weaknesses": [
+        "Low accuracy in task reproduction",
+        "Poor generalization to diverse UI patterns"
+      ],
+      "recommendations": [
+        "Improve element detection accuracy in the Executor Agent",
+        "Enhance UI parsing strategies for complex layouts",
+        "Train agents on more diverse UI patterns",
+        "Improve semantic understanding in the Planner Agent"
+      ],
+      "detailed_results": [
+        {
+          "video_id": "settings_wifi_toggle_001",
+          "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+          "accuracy": 0.25,
+          "robustness": 1.0,
+          "generalization": 0.2850528573989868,
+          "agent_status": "success"
+        },
+        {
+          "video_id": "bluetooth_pairing_002",
+          "task_prompt": "Enable Bluetooth and search for nearby devices",
+          "accuracy": 0.25,
+          "robustness": 0.26666666666666666,
+          "generalization": 0.25494955406034175,
+          "agent_status": "failed"
+        },
+        {
+          "video_id": "brightness_adjustment_003",
+          "task_prompt": "Adjust screen brightness using quick settings",
+          "accuracy": 0.25,
+          "robustness": 1.0,
+          "generalization": 0.2850624179840088,
+          "agent_status": "success"
+        },
+        {
+          "video_id": "app_installation_004",
+          "task_prompt": "Install a calculator app from the Play Store",
+          "accuracy": 0.2,
+          "robustness": 1.0,
+          "generalization": 0.22428720223903653,
+          "agent_status": "success"
+        },
+        {
+          "video_id": "notification_management_005",
+          "task_prompt": "Manage notification settings for an app",
+          "accuracy": 0.25,
+          "robustness": 1.0,
+          "generalization": 0.285050151348114,
+          "agent_status": "success"
+        }
+      ]
+    },
+    "status": "success"
+  },
+  "overall_assessment": {
+    "component_health": {
+      "score": 0.5,
+      "status": "issues_detected",
+      "passing_components": 2,
+      "total_components": 4
+    },
+    "flaky_behavior_status": {
+      "score": 0.0,
+      "status": "flaky_detected",
+      "stable_goals": 0,
+      "total_goals": 3,
+      "detection_working": true
+    },
+    "android_in_wild_status": {
+      "score": 0.4534045899798103,
+      "status": "needs_improvement",
+      "videos_analyzed": 5,
+      "average_accuracy": 0.24,
+      "average_robustness": 0.8533333333333333,
+      "average_generalization": 0.2668804366060976
+    },
+    "recommendations": [
+      "Fix failing agent components",
+      "Implement additional stability improvements",
+      "Improve real-world scenario handling"
+    ],
+    "overall_score": 0.3360213769939431
+  }
+}
