@@ -26,6 +26,13 @@ class VerificationResult:
     strategies_used: List[str]
     ui_changes_detected: Dict[str, Any]
     element_matches: List[Dict[str, Any]]
+    stability_score: float = 0.0
+    false_positive_risk: float = 0.0
+    alternative_interpretations: List[str] = None
+
+    def __post_init__(self):
+        if self.alternative_interpretations is None:
+            self.alternative_interpretations = []
 
 class VerifierAgent:
     """

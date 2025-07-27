@@ -25,6 +25,13 @@ class Subgoal:
     required_elements: List[str]
     alternative_approaches: List[str]
     confidence: float
+    retry_strategy: str = "standard"
+    max_retries: int = 3
+    fallback_subgoals: List[str] = None
+
+    def __post_init__(self):
+        if self.fallback_subgoals is None:
+            self.fallback_subgoals = []
 
 @dataclass
 class PlanningResult:
@@ -37,6 +44,12 @@ class PlanningResult:
     confidence: float
     plan_complexity: str
     alternative_plans: List[List[Subgoal]]
+    risk_assessment: Dict[str, float] = None
+    stability_score: float = 0.0
+
+    def __post_init__(self):
+        if self.risk_assessment is None:
+            self.risk_assessment = {}
 
 class PlannerAgent:
     """
@@ -49,9 +62,12 @@ class PlannerAgent:
                  enable_template_matching: bool = True,
                  enable_semantic_planning: bool = True,
                  enable_adaptive_planning: bool = True,
-                 max_planning_time: float = 30.0,
-                 min_confidence: float = 0.5,
-                 enable_plan_optimization: bool = True):
+                 enable_fallback_planning: bool = True,
+                 enable_confidence_weighting: bool = True,
+                 min_confidence_threshold: float = 0.4,
+                 planning_timeout: float = 30.0,
+                 enable_stability_scoring: bool = True,
+                 enable_risk_assessment: bool = True):
         """
         Initialize the planner agent.
         
@@ -68,9 +84,12 @@ class PlannerAgent:
         self.enable_template_matching = enable_template_matching
         self.enable_semantic_planning = enable_semantic_planning
         self.enable_adaptive_planning = enable_adaptive_planning
-        self.max_planning_time = max_planning_time
-        self.min_confidence = min_confidence
-        self.enable_plan_optimization = enable_plan_optimization
+        self.enable_fallback_planning = enable_fallback_planning
+        self.enable_confidence_weighting = enable_confidence_weighting
+        self.min_confidence_threshold = min_confidence_threshold
+        self.planning_timeout = planning_timeout
+        self.enable_stability_scoring = enable_stability_scoring
+        self.enable_risk_assessment = enable_risk_assessment
         
         # Track planning statistics
         self.stats = {
