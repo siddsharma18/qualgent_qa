@@ -11,6 +11,8 @@ import argparse
 import time
 import random
 from typing import Dict, Any
+import json
+from datetime import datetime
 
 # Add the project root to the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -221,93 +223,99 @@ class AdaptiveRetryStrategies:
 
 
 def main():
-    """Main function to run the enhanced robust agent loop."""
-    parser = argparse.ArgumentParser(description="Run the enhanced robust agent loop")
-    parser.add_argument("--goal", "-g", type=str, required=True,
-                       help="High-level goal to achieve (e.g., 'Turn off Wi-Fi and enable Bluetooth')")
-    parser.add_argument("--config", "-c", type=str, default="default",
+    """Main function to run the robust agent loop."""
+    parser = argparse.ArgumentParser(description="QualGent QA System - Robust Agent Loop")
+    parser.add_argument("--goal", type=str, required=True, help="High-level goal to execute")
+    parser.add_argument("--config", type=str, default="default", 
                        choices=["default", "high_performance", "high_reliability"],
                        help="Configuration preset to use")
-    parser.add_argument("--max-iterations", "-i", type=int, default=10,
-                       help="Maximum iterations for the loop")
-    parser.add_argument("--verbose", "-v", action="store_true",
-                       help="Enable verbose logging")
-    parser.add_argument("--enhanced", "-e", action="store_true",
-                       help="Use enhanced anti-flaky execution mode")
-    
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
+    parser.add_argument("--log-file", type=str, help="Log file path")
     args = parser.parse_args()
     
-    # Set up logging
-    log_level = "DEBUG" if args.verbose else "INFO"
-    logger = QALogger(log_level=log_level, enable_console=True)
-    
-    logger.info("Main", "Starting enhanced robust agent loop", {
-        "goal": args.goal,
-        "config": args.config,
-        "max_iterations": args.max_iterations,
-        "enhanced_mode": args.enhanced
-    })
+    print("QualGent QA System - Robust Agent Loop")
+    print("=" * 50)
+    print()
     
     try:
-        # Create mock environment (replace with real AndroidEnv in production)
-        mock_env = MockEnvironment()
+        # Create environment (mock for now, replace with real AndroidEnv in production)
+        env = MockEnvironment()
         
-        # Create enhanced agent loop
-        if args.enhanced:
-            agent_loop = EnhancedRobustAgentLoop(mock_env, args.config)
-            result = agent_loop.execute_goal_with_stability_checks(args.goal, args.max_iterations)
-        else:
-            agent_loop = RobustAgentLoop(mock_env, args.config)
-            result = agent_loop.execute_goal(args.goal, args.max_iterations)
+        # Create robust agent loop
+        agent_loop = RobustAgentLoop(env, args.config)
+        
+        # Execute goal
+        print(f"Executing goal: {args.goal}")
+        print(f"Configuration: {args.config}")
+        print()
+        
+        start_time = time.time()
+        result = agent_loop.execute_goal(args.goal)
+        execution_time = time.time() - start_time
         
         # Print results
-        print("\n" + "="*60)
-        print("�� ENHANCED GOAL EXECUTION RESULTS")
-        print("="*60)
-        print(f"Goal: {result['goal']}")
-        print(f"Status: {result['status'].upper()}")
-        print(f"Success Rate: {result['success_rate']:.1%}")
-        print(f"Execution Time: {result['execution_time']:.2f}s")
-        print(f"Iterations: {result['iterations']}")
+        print("Execution Results:")
+        print("-" * 20)
+        print(f"   Status: {result['status']}")
+        print(f"   Success Rate: {result['success_rate']:.1%}")
+        print(f"   Execution Time: {execution_time:.2f}s")
+        print(f"   Iterations: {result['iterations']}")
+        print(f"   Completed Subgoals: {result['completed_subgoals']}")
+        print(f"   Failed Subgoals: {result['failed_subgoals']}")
         
-        if result.get('stability_score'):
-            print(f"Stability Score: {result['stability_score']:.2f}")
+        if result['completed_subgoals_list']:
+            print(f"   Completed: {', '.join(result['completed_subgoals_list'])}")
         
-        if result.get('enhanced_execution'):
-            print("🔧 Enhanced anti-flaky execution mode used")
+        if result['failed_subgoals_list']:
+            print(f"   Failed: {', '.join(result['failed_subgoals_list'])}")
         
-        print(f"\n📋 SUBGOALS:")
-        print(f"  Completed ({len(result['completed_subgoals'])}):")
-        for subgoal in result['completed_subgoals']:
-            print(f"    ✅ {subgoal}")
-        
-        if result['failed_subgoals']:
-            print(f"  Failed ({len(result['failed_subgoals'])}):")
-            for subgoal in result['failed_subgoals']:
-                print(f"    ❌ {subgoal}")
+        print()
         
         # Print planning details
-        if result['planning_result']:
-            plan_result = result['planning_result']
-            print(f"\n📝 PLANNING DETAILS:")
-            print(f"  Status: {plan_result.status.value}")
-            print(f"  Confidence: {plan_result.confidence:.2f}")
-            print(f"  Planning Time: {plan_result.planning_time:.2f}s")
-            print(f"  Strategies Used: {', '.join(plan_result.strategies_used)}")
+        if result.get('planning_status'):
+            print("Planning Details:")
+            print("-" * 20)
+            print(f"   Status: {result['planning_status']}")
+            print(f"   Confidence: {result['planning_confidence']:.2f}")
+            print(f"   Planning Time: {result['planning_time']:.2f}s")
+            print(f"   Strategies Used: {', '.join(result['strategies_used'])}")
+            print()
         
-        # Final result
-        if result['status'] == 'success':
-            print(f"\n🎉 SUCCESS! Goal achieved with enhanced reliability.")
-        else:
-            print(f"\n⚠️  PARTIAL SUCCESS. Goal partially achieved.")
+        # Print statistics
+        stats = agent_loop.get_stats()
+        print("System Statistics:")
+        print("-" * 20)
+        print(f"   Total Goals: {stats['loop_stats']['total_goals']}")
+        print(f"   Success Rate: {stats['loop_stats']['successful_goals'] / max(stats['loop_stats']['total_goals'], 1) * 100:.1f}%")
+        print(f"   Average Goal Time: {stats['loop_stats']['average_goal_completion_time']:.2f}s")
+        print(f"   Total Plans: {stats['loop_stats']['total_plans']}")
+        print(f"   Total Replans: {stats['loop_stats']['total_replans']}")
+        print()
+        
+        # Save results
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        results_file = f"robust_loop_results_{timestamp}.json"
+        
+        with open(results_file, 'w') as f:
+            json.dump({
+                "goal": args.goal,
+                "config": args.config,
+                "result": result,
+                "statistics": stats,
+                "timestamp": timestamp
+            }, f, indent=2, default=str)
+        
+        print(f"Results saved to: {results_file}")
+        print()
+        print("Robust agent loop execution completed!")
         
         return 0 if result['status'] == 'success' else 1
         
     except Exception as e:
-        logger.error("Main", "Error in enhanced robust agent loop", {"error": str(e)})
-        print(f"\n❌ ERROR: {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"Error during execution: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
         return 1
 
 

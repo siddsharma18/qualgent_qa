@@ -569,113 +569,70 @@ def _serialize_agent_result(result: Dict[str, Any]) -> Dict[str, Any]:
 
 
 def main():
-    """Main function for android_in_the_wild integration."""
+    """Main function to run Android in the Wild integration."""
     parser = argparse.ArgumentParser(description="Android in the Wild Integration")
-    parser.add_argument("--dataset-path", type=str, help="Path to android_in_the_wild dataset")
     parser.add_argument("--num-videos", type=int, default=5, help="Number of videos to analyze")
-    parser.add_argument("--output-dir", type=str, default=".", help="Output directory for results")
-    parser.add_argument("--verbose", "-v", action="store_true", help="Enable verbose logging")
-    
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
     
-    # Setup logging
-    log_level = "DEBUG" if args.verbose else "INFO"
-    logger = QALogger(log_level=log_level, enable_console=True)
-    
-    logger.info("Main", "Starting android_in_the_wild integration")
+    print("Android in the Wild Integration - QualGent QA System")
+    print("=" * 60)
+    print()
     
     try:
-        # Initialize analyzer
-        analyzer = AndroidInTheWildAnalyzer(logger)
+        # Create analyzer
+        analyzer = AndroidInTheWildAnalyzer()
         
-        # Setup dataset
-        if not analyzer.setup_dataset(args.dataset_path):
-            logger.error("Main", "Failed to setup dataset")
-            return 1
+        # Run analysis
+        print(f"Analyzing {args.num_videos} Android in the Wild scenarios...")
+        print()
         
-        # Select diverse videos
-        video_ids = analyzer.select_diverse_videos(args.num_videos)
-        logger.info("Main", f"Selected {len(video_ids)} videos for analysis")
+        results = analyzer.analyze_scenarios(args.num_videos, verbose=args.verbose)
         
-        # Analyze each video
-        analysis_results = []
-        for i, video_id in enumerate(video_ids, 1):
-            logger.info("Main", f"Analyzing video {i}/{len(video_ids)}: {video_id}")
-            
-            try:
-                result = analyzer.analyze_video(video_id)
-                analysis_results.append(result)
-                
-                # Print progress
-                print(f"\n📹 Video {i}: {video_id}")
-                print(f"  Task: {result.generated_task_prompt}")
-                print(f"  Accuracy: {result.accuracy_score:.2f}")
-                print(f"  Robustness: {result.robustness_score:.2f}")
-                print(f"  Generalization: {result.generalization_score:.2f}")
-                
-            except Exception as e:
-                logger.error("Main", f"Failed to analyze video {video_id}: {e}")
-                continue
+        # Print results
+        print("Analysis Results:")
+        print("-" * 30)
+        print(f"   Videos Analyzed: {len(results)}")
+        print(f"   Average Accuracy: {analyzer.calculate_average_accuracy(results):.2f}")
+        print(f"   Average Robustness: {analyzer.calculate_average_robustness(results):.2f}")
+        print(f"   Average Generalization: {analyzer.calculate_average_generalization(results):.2f}")
+        print(f"   Overall Performance: {analyzer.calculate_overall_performance(results):.2f}")
+        print()
         
-        # Evaluate overall integration
-        evaluator = AndroidInTheWildEvaluator(logger)
-        evaluation = evaluator.evaluate_integration(analysis_results)
+        # Print detailed results
+        if args.verbose:
+            print("Detailed Results:")
+            print("-" * 20)
+            for i, result in enumerate(results, 1):
+                print(f"   Scenario {i}: {result['scenario_name']}")
+                print(f"     Accuracy: {result['accuracy']:.2f}")
+                print(f"     Robustness: {result['robustness']:.2f}")
+                print(f"     Generalization: {result['generalization']:.2f}")
+                print(f"     Performance: {result['performance']:.2f}")
+                print()
         
-        # Save results
+        # Generate report
+        report = analyzer.generate_report(results)
+        
+        # Save report
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
-        results_file = os.path.join(args.output_dir, f"android_in_wild_results_{timestamp}.json")
+        report_filename = f"android_in_the_wild_report_{timestamp}.json"
         
-        with open(results_file, 'w') as f:
-            json.dump({
-                "analysis_results": [
-                    {
-                        "video_id": r.video_id,
-                        "task_prompt": r.generated_task_prompt,
-                        "accuracy_score": r.accuracy_score,
-                        "robustness_score": r.robustness_score,
-                        "generalization_score": r.generalization_score,
-                        "comparison_metrics": r.comparison_metrics,
-                        "agent_result": _serialize_agent_result(r.agent_reproduction_result)
-                    }
-                    for r in analysis_results
-                ],
-                "evaluation": evaluation
-            }, f, indent=2)
+        with open(report_filename, 'w') as f:
+            json.dump(report, f, indent=2, default=str)
         
-        # Print final results
-        print("\n" + "="*80)
-        print("🎯 ANDROID IN THE WILD INTEGRATION RESULTS")
-        print("="*80)
-        
-        metrics = evaluation["aggregate_metrics"]
-        print(f"Videos Analyzed: {metrics['total_videos_analyzed']}")
-        print(f"Average Accuracy: {metrics['average_accuracy']:.2f}")
-        print(f"Average Robustness: {metrics['average_robustness']:.2f}")
-        print(f"Average Generalization: {metrics['average_generalization']:.2f}")
-        print(f"Overall Performance: {metrics['overall_performance']:.2f}")
-        
-        print(f"\n💪 Strengths:")
-        for strength in evaluation["strengths"]:
-            print(f"  ✅ {strength}")
-        
-        if evaluation["weaknesses"]:
-            print(f"\n⚠️  Weaknesses:")
-            for weakness in evaluation["weaknesses"]:
-                print(f"  ❌ {weakness}")
-        
-        print(f"\n🔧 Recommendations:")
-        for recommendation in evaluation["recommendations"]:
-            print(f"  💡 {recommendation}")
-        
-        print(f"\n📊 Results saved to: {results_file}")
-        
-        return 0
+        print(f"Report saved to: {report_filename}")
+        print()
+        print("Android in the Wild integration completed successfully!")
         
     except Exception as e:
-        logger.error("Main", f"Integration failed: {e}")
-        import traceback
-        traceback.print_exc()
+        print(f"Error during analysis: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
         return 1
+    
+    return 0
 
 
 if __name__ == "__main__":

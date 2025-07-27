@@ -486,24 +486,27 @@ def main():
     report = validator.generate_report()
     
     # Print results
-    print("\n📊 Validation Results:")
-    print("=" * 50)
+    print("QualGent QA System - Assignment Deliverables Validation")
+    print("=" * 60)
+    print()
     
     for result in results:
-        status_icon = {
-            ValidationStatus.PASS: "✅",
-            ValidationStatus.FAIL: "❌", 
-            ValidationStatus.WARNING: "⚠️",
-            ValidationStatus.SKIP: "⏭️"
+        status_symbol = {
+            ValidationStatus.PASS: "PASS",
+            ValidationStatus.FAIL: "FAIL", 
+            ValidationStatus.WARNING: "WARN",
+            ValidationStatus.SKIP: "SKIP"
         }[result.status]
         
-        print(f"{status_icon} {result.name}: {result.message}")
+        print(f"{status_symbol:4} {result.name}: {result.message}")
         if result.details:
             for key, value in result.details.items():
-                print(f"    {key}: {value}")
+                print(f"        {key}: {value}")
     
     # Print summary
-    print(f"\n📈 Summary:")
+    print()
+    print("Summary:")
+    print("-" * 20)
     print(f"   Overall Status: {report['overall_status'].upper()}")
     print(f"   Total Checks: {report['summary']['total_checks']}")
     print(f"   Passed: {report['summary']['passed']}")
@@ -512,7 +515,9 @@ def main():
     print(f"   Success Rate: {report['summary']['success_rate']:.1f}%")
     
     if report['recommendations']:
-        print(f"\n💡 Recommendations:")
+        print()
+        print("Recommendations:")
+        print("-" * 20)
         for rec in report['recommendations']:
             print(f"   • {rec}")
     
@@ -521,7 +526,8 @@ def main():
     with open(f"validation_report_{timestamp.split('T')[0]}.json", 'w') as f:
         json.dump(report, f, indent=2, default=str)
     
-    print(f"\n💾 Validation report saved to: validation_report_{timestamp.split('T')[0]}.json")
+    print()
+    print(f"Validation report saved to: validation_report_{timestamp.split('T')[0]}.json")
     
     return report['overall_status'] == 'pass'
 

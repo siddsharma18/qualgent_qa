@@ -10,6 +10,7 @@ import json
 import time
 import argparse
 from typing import Dict, Any, List, Optional, Union, Tuple
+from datetime import datetime
 
 # Add the project root to the path
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -467,85 +468,112 @@ class AndroidWorldTaskRunner:
             self.logger.warning("TaskRunner", f"Error during cleanup: {e}")
 
 def main():
-    """Main function for running Android World tasks."""
-    parser = argparse.ArgumentParser(description="Run Android World tasks with Agent-S integration")
-    parser.add_argument("--task", type=str, help="Specific task to run")
-    parser.add_argument("--tasks", nargs="+", help="List of tasks to run")
-    parser.add_argument("--max-steps", type=int, default=50, help="Maximum steps per task")
-    parser.add_argument("--console-port", type=int, default=5554, help="Emulator console port")
-    parser.add_argument("--perform-emulator-setup", action="store_true", help="Perform emulator setup")
-    parser.add_argument("--adb-path", type=str, help="Path to ADB executable")
+    """Main function to run Android World tasks."""
+    parser = argparse.ArgumentParser(description="Android World Task Runner")
+    parser.add_argument("--task", type=str, help="Single task to run")
+    parser.add_argument("--tasks", nargs="+", help="Multiple tasks to run")
     parser.add_argument("--list-tasks", action="store_true", help="List available tasks")
-    parser.add_argument("--output", type=str, help="Output file for results")
-    parser.add_argument("--config", type=str, default="default", help="Configuration preset to use")
-    
+    parser.add_argument("--config", type=str, default="default", 
+                       choices=["default", "high_performance", "high_reliability"],
+                       help="Configuration preset")
+    parser.add_argument("--verbose", action="store_true", help="Enable verbose output")
     args = parser.parse_args()
     
-    # Initialize task runner
-    runner = AndroidWorldTaskRunner(
-        console_port=args.console_port,
-        perform_emulator_setup=args.perform_emulator_setup,
-        adb_path=args.adb_path,
-        config_name=args.config
-    )
+    print("Android World Task Runner - QualGent QA System")
+    print("=" * 50)
+    print()
     
     try:
+        # Create task runner
+        runner = AndroidWorldTaskRunner()
+        
         if args.list_tasks:
-            # List available tasks
-            tasks = runner.get_available_tasks()
-            print("📋 Available Android World Tasks:")
-            print("=" * 50)
-            for i, task in enumerate(tasks, 1):
-                print(f"   {i:2d}. {task}")
-            return
+            print("Available Tasks:")
+            print("-" * 20)
+            for task_name in runner.get_available_tasks():
+                print(f"   {task_name}")
+            print()
+            return 0
         
+        # Determine tasks to run
         if args.task:
-            # Run single task
-            print(f"🎯 Running single task: {args.task}")
-            result = runner.run_task(args.task, args.max_steps)
-            print(f"✅ Task completed with score: {result['success_score']:.2f}")
-            
+            tasks_to_run = [args.task]
         elif args.tasks:
-            # Run task suite
-            print(f"🏃 Running task suite with {len(args.tasks)} tasks")
-            results = runner.run_task_suite(args.tasks, args.max_steps)
-            
-            print(f"\n📊 Task Suite Results:")
-            print(f"   Total Tasks: {results['total_tasks']}")
-            print(f"   Completed: {results['completed_tasks']}")
-            print(f"   Failed: {results['failed_tasks']}")
-            print(f"   Average Success Score: {results['average_success_score']:.2f}")
-            print(f"   Environment: {results['environment_type']}")
-            
-            # Save results
-            if args.output:
-                with open(args.output, 'w') as f:
-                    json.dump(results, f, indent=2)
-                print(f"💾 Results saved to: {args.output}")
-        
+            tasks_to_run = args.tasks
         else:
-            # Run default task suite
-            default_tasks = [
-                "SystemWifiTurnOff",
-                "SystemBluetoothTurnOn",
-                "ClockStopWatchRunning"
-            ]
-            print(f"🏃 Running default task suite")
-            results = runner.run_task_suite(default_tasks, args.max_steps)
+            print("Please specify a task with --task or --tasks, or use --list-tasks to see available tasks")
+            return 1
+        
+        # Run tasks
+        print(f"Running {len(tasks_to_run)} task(s) with {args.config} configuration...")
+        print()
+        
+        results = []
+        for i, task_name in enumerate(tasks_to_run, 1):
+            print(f"Task {i}/{len(tasks_to_run)}: {task_name}")
+            print("-" * 40)
             
-            print(f"\n📊 Default Task Suite Results:")
-            print(f"   Total Tasks: {results['total_tasks']}")
-            print(f"   Completed: {results['completed_tasks']}")
-            print(f"   Failed: {results['failed_tasks']}")
-            print(f"   Average Success Score: {results['average_success_score']:.2f}")
-            print(f"   Environment: {results['environment_type']}")
-    
-    except KeyboardInterrupt:
-        print("\n⚠️  Task execution interrupted by user")
+            try:
+                result = runner.run_task(task_name, args.config, verbose=args.verbose)
+                results.append(result)
+                
+                print(f"   Status: {result['status']}")
+                print(f"   Success Rate: {result['success_rate']:.1%}")
+                print(f"   Execution Time: {result['execution_time']:.2f}s")
+                print(f"   Completed Subgoals: {result['completed_subgoals']}")
+                print(f"   Failed Subgoals: {result['failed_subgoals']}")
+                print()
+                
+            except Exception as e:
+                print(f"   Error: {e}")
+                print()
+                results.append({
+                    'task_name': task_name,
+                    'status': 'error',
+                    'error': str(e)
+                })
+        
+        # Print summary
+        successful_tasks = [r for r in results if r['status'] == 'success']
+        failed_tasks = [r for r in results if r['status'] != 'success']
+        
+        print("Task Execution Summary:")
+        print("-" * 25)
+        print(f"   Total Tasks: {len(results)}")
+        print(f"   Successful: {len(successful_tasks)}")
+        print(f"   Failed: {len(failed_tasks)}")
+        print(f"   Success Rate: {len(successful_tasks) / len(results) * 100:.1f}%")
+        print()
+        
+        # Save results
+        timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+        results_file = f"android_world_results_{timestamp}.json"
+        
+        with open(results_file, 'w') as f:
+            json.dump({
+                "tasks": results,
+                "summary": {
+                    "total_tasks": len(results),
+                    "successful_tasks": len(successful_tasks),
+                    "failed_tasks": len(failed_tasks),
+                    "success_rate": len(successful_tasks) / len(results) * 100
+                },
+                "config": args.config,
+                "timestamp": timestamp
+            }, f, indent=2, default=str)
+        
+        print(f"Results saved to: {results_file}")
+        print()
+        print("Android World task execution completed!")
+        
+        return 0 if len(failed_tasks) == 0 else 1
+        
     except Exception as e:
-        print(f"❌ Error during task execution: {e}")
-    finally:
-        runner.close()
+        print(f"Error during task execution: {e}")
+        if args.verbose:
+            import traceback
+            traceback.print_exc()
+        return 1
 
 if __name__ == "__main__":
     main() 

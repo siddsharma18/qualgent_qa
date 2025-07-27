@@ -32,9 +32,8 @@ def test_planner_agent():
         enable_template_matching=config.planner.enable_template_matching,
         enable_semantic_planning=config.planner.enable_semantic_planning,
         enable_adaptive_planning=config.planner.enable_adaptive_planning,
-        max_planning_time=config.planner.max_planning_time,
-        min_confidence=config.planner.min_confidence,
-        enable_plan_optimization=config.planner.enable_plan_optimization
+        planning_timeout=config.planner.max_planning_time,
+        min_confidence_threshold=config.planner.min_confidence
     )
     
     # Test case 1: WiFi management - template matching

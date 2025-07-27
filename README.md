@@ -1,8 +1,8 @@
-# Qualgent QA System
+# QualGent QA System
 
 A robust Android automation system with intelligent agents for executing UI tasks.
 
-## 🚀 Features
+## Features
 
 ### Robust Executor Agent
 - **Multiple Element Finding Strategies**: Exact text matching, fuzzy matching, semantic matching, keyword matching, and action-based matching
@@ -65,7 +65,7 @@ A robust Android automation system with intelligent agents for executing UI task
 - **Flexible Settings**: Configurable timeouts, retry counts, confidence thresholds
 - **Runtime Configuration**: Easy configuration switching
 
-## 📁 Project Structure
+## Project Structure
 
 ```
 qualgent_qa/
@@ -96,7 +96,7 @@ qualgent_qa/
 └── run_android_world_tasks.py # Android World task runner
 ```
 
-## 🛠️ Installation
+## Installation
 
 1. **Clone the repository**:
    ```bash
@@ -114,7 +114,7 @@ qualgent_qa/
    # Follow the setup guide in env/README.md
    ```
 
-## 🚀 Quick Start
+## Quick Start
 
 ### Full Robust Loop Usage
 
@@ -211,7 +211,7 @@ python run_robust_loop.py --goal "Turn off Wi-Fi"
 python run_robust_loop.py --goal "Configure device settings" --config high_performance --verbose
 ```
 
-## ⚙️ Configuration
+## Configuration
 
 ### Available Presets
 
@@ -236,7 +236,7 @@ custom_config = QASystemConfig(
 )
 ```
 
-## 🔧 Key Improvements Made
+## Key Improvements Made
 
 ### 1. **Robust Element Finding**
 - **Multiple Strategies**: 5 different strategies for finding UI elements
@@ -302,7 +302,7 @@ custom_config = QASystemConfig(
 - **Runtime Switching**: Change configurations at runtime
 - **Validation**: Configuration validation and error checking
 
-## 📊 Performance Features
+## Performance Features
 
 ### Statistics Tracking
 ```python
@@ -325,7 +325,7 @@ logger = QALogger(log_level="DEBUG", log_file="execution.log")
 logger = QALogger(log_level="INFO", enable_json=True)
 ```
 
-## 🔍 Element Finding Strategies
+## Element Finding Strategies
 
 1. **Exact Text Match**: Perfect text matches
 2. **Fuzzy Text Match**: Similar text using string similarity
@@ -333,7 +333,7 @@ logger = QALogger(log_level="INFO", enable_json=True)
 4. **Keyword Match**: Specific keyword matching
 5. **Action-based Match**: Context-aware action matching
 
-## 🔍 Verification Strategies
+## Verification Strategies
 
 1. **UI Change Verification**: Detects significant changes in UI tree structure
 2. **Subgoal Presence Verification**: Checks if subgoal text appears in current UI
@@ -341,7 +341,7 @@ logger = QALogger(log_level="INFO", enable_json=True)
 4. **Element Interaction Verification**: Analyzes interactive elements and their relevance
 5. **Semantic Verification**: Uses semantic understanding to verify subgoal completion
 
-## 🛡️ Safety Features
+## Safety Features
 
 - **Action Validation**: Prevents invalid actions
 - **Timeout Protection**: Prevents hanging operations
@@ -349,7 +349,7 @@ logger = QALogger(log_level="INFO", enable_json=True)
 - **State Verification**: Validates UI state changes
 - **Retry Limits**: Prevents infinite retry loops
 
-## 📈 Monitoring and Debugging
+## Monitoring and Debugging
 
 ### Log Levels
 - **DEBUG**: Detailed debugging information
@@ -365,7 +365,7 @@ logger = QALogger(log_level="INFO", enable_json=True)
 - Retry attempts
 - Element finding success rates
 
-## 🤝 Contributing
+## Contributing
 
 1. Fork the repository
 2. Create a feature branch
@@ -373,11 +373,11 @@ logger = QALogger(log_level="INFO", enable_json=True)
 4. Add tests
 5. Submit a pull request
 
-## 📝 License
+## License
 
 This project is licensed under the MIT License - see the LICENSE file for details.
 
-## 🆘 Support
+## Support
 
 For support and questions:
 1. Check the documentation

@@ -206,7 +206,7 @@ class SupervisorAgent:
         """Load and validate QA logs."""
         try:
             if not os.path.exists(log_path):
-                self.logger.warning("Supervisor", "Log file not found", {"path": log_path})
+                self.logger.warning("Supervisor", "Log file not found", path=log_path)
                 return []
             
             with open(log_path, "r") as f:
@@ -221,12 +221,12 @@ class SupervisorAgent:
                 if self._validate_log_entry(log):
                     validated_logs.append(log)
                 else:
-                    self.logger.warning("Supervisor", "Invalid log entry", {"log": log})
+                    self.logger.warning("Supervisor", "Invalid log entry", log=str(log))
             
             return validated_logs
             
         except Exception as e:
-            self.logger.error("Supervisor", "Failed to load logs", {"error": str(e)})
+            self.logger.error("Supervisor", "Failed to load logs", error=str(e))
             return []
     
     def _validate_log_entry(self, log: Dict) -> bool:
@@ -871,7 +871,7 @@ class SupervisorAgent:
         }
     
     def _generate_markdown_report(self, report: EvaluationReport) -> str:
-        """Generate a human-readable Markdown report."""
+        
         md = f"""# QA System Evaluation Report
 
 **Generated:** {report.test_timestamp}  
