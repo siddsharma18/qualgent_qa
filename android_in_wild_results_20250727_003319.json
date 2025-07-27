@@ -1,0 +1,224 @@
+{
+  "analysis_results": [
+    {
+      "video_id": "settings_wifi_toggle_001",
+      "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+      "accuracy_score": 0.25,
+      "robustness_score": 1.0,
+      "generalization_score": 0.2850847816467285,
+      "comparison_metrics": {
+        "accuracy": 0.25,
+        "robustness": 1.0,
+        "generalization": 0.2850847816467285,
+        "overall": 0.4855254344940186
+      },
+      "agent_result": {
+        "status": "success",
+        "goal": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+        "completed_subgoals": [
+          "Open Settings"
+        ],
+        "failed_subgoals": [],
+        "success_rate": 1.0,
+        "execution_time": 1.5016956329345703,
+        "iterations": 1,
+        "planning_result": {
+          "status": "PlanningStatus.SUCCESS",
+          "subgoals": [
+            {
+              "name": "Open Settings",
+              "description": "Navigate to the Settings application",
+              "priority": 1,
+              "confidence": 0.9
+            }
+          ],
+          "total_estimated_duration": 2.0,
+          "planning_time": 7.319450378417969e-05,
+          "strategies_used": [
+            "_semantic_planning",
+            "_adaptive_planning",
+            "_fallback_planning"
+          ],
+          "confidence": 0.9,
+          "plan_complexity": "low",
+          "alternative_plans": [
+            [
+              {
+                "name": "Navigate to Target",
+                "description": "Navigate to the appropriate section for navigation",
+                "priority": 1,
+                "dependencies": [],
+                "estimated_duration": 3.0,
+                "required_elements": [
+                  "button",
+                  "menu",
+                  "option"
+                ],
+                "alternative_approaches": [
+                  "Settings",
+                  "Direct Interaction"
+                ],
+                "confidence": 0.7,
+                "retry_strategy": "standard",
+                "max_retries": 3,
+                "fallback_subgoals": []
+              },
+              {
+                "name": "General Action",
+                "description": "Perform navigation action",
+                "priority": 2,
+                "dependencies": [
+                  "Navigate to Target"
+                ],
+                "estimated_duration": 2.0,
+                "required_elements": [
+                  "button",
+                  "menu",
+                  "option"
+                ],
+                "alternative_approaches": [
+                  "Settings",
+                  "Direct Interaction"
+                ],
+                "confidence": 0.7,
+                "retry_strategy": "standard",
+                "max_retries": 3,
+                "fallback_subgoals": []
+              }
+            ],
+            [
+              {
+                "name": "Open Settings",
+                "description": "Navigate to the Settings application",
+                "priority": 1,
+                "dependencies": [],
+                "estimated_duration": 2.0,
+                "required_elements": [
+                  "settings_button"
+                ],
+                "alternative_approaches": [
+                  "Quick Settings",
+                  "App Drawer"
+                ],
+                "confidence": 0.9,
+                "retry_strategy": "standard",
+                "max_retries": 3,
+                "fallback_subgoals": []
+              }
+            ],
+            [
+              {
+                "name": "Open Settings",
+                "description": "Navigate to the Settings application",
+                "priority": 1,
+                "dependencies": [],
+                "estimated_duration": 2.0,
+                "required_elements": [
+                  "settings_button"
+                ],
+                "alternative_approaches": [
+                  "Quick Settings"
+                ],
+                "confidence": 0.8,
+                "retry_strategy": "standard",
+                "max_retries": 3,
+                "fallback_subgoals": []
+              },
+              {
+                "name": "Search for Goal",
+                "description": "Search for settings related to the task",
+                "priority": 2,
+                "dependencies": [
+                  "Open Settings"
+                ],
+                "estimated_duration": 3.0,
+                "required_elements": [
+                  "search_button",
+                  "search_input"
+                ],
+                "alternative_approaches": [
+                  "Manual navigation"
+                ],
+                "confidence": 0.6,
+                "retry_strategy": "standard",
+                "max_retries": 3,
+                "fallback_subgoals": []
+              },
+              {
+                "name": "Execute Action",
+                "description": "Perform the required action for the task",
+                "priority": 3,
+                "dependencies": [
+                  "Search for Goal"
+                ],
+                "estimated_duration": 2.0,
+                "required_elements": [
+                  "action_button"
+                ],
+                "alternative_approaches": [
+                  "Direct interaction"
+                ],
+                "confidence": 0.5,
+                "retry_strategy": "standard",
+                "max_retries": 3,
+                "fallback_subgoals": []
+              }
+            ]
+          ],
+          "risk_assessment": {},
+          "stability_score": 0.0
+        },
+        "stats": {
+          "total_goals": 1,
+          "successful_goals": 1,
+          "failed_goals": 0,
+          "total_plans": 1,
+          "total_replans": 0,
+          "total_executions": 1,
+          "total_verifications": 1,
+          "average_goal_completion_time": 1.5016956329345703
+        },
+        "stability_score": 1.0,
+        "enhanced_execution": true,
+        "reproduction_metrics": {
+          "steps_attempted": 1,
+          "steps_completed": 1,
+          "execution_fidelity": 0.3,
+          "timing_accuracy": 0.25028260548909503
+        }
+      }
+    }
+  ],
+  "evaluation": {
+    "aggregate_metrics": {
+      "total_videos_analyzed": 1,
+      "average_accuracy": 0.25,
+      "average_robustness": 1.0,
+      "average_generalization": 0.2850847816467285,
+      "overall_performance": 0.5116949272155762
+    },
+    "strengths": [
+      "Robust execution across different scenarios"
+    ],
+    "weaknesses": [
+      "Low accuracy in task reproduction",
+      "Poor generalization to diverse UI patterns"
+    ],
+    "recommendations": [
+      "Improve element detection accuracy in the Executor Agent",
+      "Enhance UI parsing strategies for complex layouts",
+      "Train agents on more diverse UI patterns",
+      "Improve semantic understanding in the Planner Agent"
+    ],
+    "detailed_results": [
+      {
+        "video_id": "settings_wifi_toggle_001",
+        "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+        "accuracy": 0.25,
+        "robustness": 1.0,
+        "generalization": 0.2850847816467285,
+        "agent_status": "success"
+      }
+    ]
+  }
+}

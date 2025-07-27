@@ -90,6 +90,8 @@ class PlannerAgent:
         self.planning_timeout = planning_timeout
         self.enable_stability_scoring = enable_stability_scoring
         self.enable_risk_assessment = enable_risk_assessment
+        self.enable_plan_optimization = True  # Always enable for compatibility
+        self.min_confidence = min_confidence_threshold  # Alias for backward compatibility
         
         # Track planning statistics
         self.stats = {
@@ -215,6 +217,16 @@ class PlannerAgent:
         """
         start_time = time.time()
         self.stats['total_plans'] += 1
+        
+        # Safety check: truncate overly long goals to prevent recursion
+        if len(goal) > 500:
+            self.logger.warning("Planner", f"Goal too long ({len(goal)} chars), truncating")
+            goal = goal[:500] + "..."
+        
+        # Safety check: prevent recursive subgoal descriptions
+        if "Subgoal(" in goal:
+            self.logger.warning("Planner", "Detected recursive subgoal in goal, cleaning")
+            goal = "Complete the requested task"
         
         # Log planning start
         self.logger.info("Planner", "Planning started", 
@@ -422,7 +434,7 @@ class PlannerAgent:
             ),
             Subgoal(
                 name="Search for Goal",
-                description=f"Search for settings related to '{goal}'",
+                description=f"Search for settings related to the task",
                 priority=2,
                 dependencies=["Open Settings"],
                 estimated_duration=3.0,
@@ -432,7 +444,7 @@ class PlannerAgent:
             ),
             Subgoal(
                 name="Execute Action",
-                description=f"Perform the required action for '{goal}'",
+                description="Perform the required action for the task",
                 priority=3,
                 dependencies=["Search for Goal"],
                 estimated_duration=2.0,

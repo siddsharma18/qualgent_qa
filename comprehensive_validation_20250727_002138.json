@@ -1,0 +1,190 @@
+{
+  "validation_timestamp": "2025-07-27T00:21:30.776868",
+  "component_tests": {
+    "planner_agent": {
+      "status": "error",
+      "error": "'PlannerAgent' object has no attribute 'enable_plan_optimization'"
+    },
+    "executor_agent": {
+      "status": "fail",
+      "confidence": 0.0,
+      "attempts": 6,
+      "stability_features": {
+        "retry_strategy_used": true,
+        "stability_score": true,
+        "ui_changes_detected": true
+      }
+    },
+    "verifier_agent": {
+      "status": "fail",
+      "confidence": 0.1125,
+      "strategies_used": [
+        "_ui_change_verification",
+        "_subgoal_presence_verification",
+        "_state_transition_verification",
+        "_element_interaction_verification",
+        "_semantic_verification"
+      ],
+      "stability_features": {
+        "stability_score": true,
+        "false_positive_risk": true,
+        "alternative_interpretations": true
+      }
+    },
+    "supervisor_agent": {
+      "status": "error",
+      "error": "QALogger.info() takes 3 positional arguments but 4 were given"
+    }
+  },
+  "flaky_behavior_tests": {
+    "error": "PlannerAgent.__init__() got an unexpected keyword argument 'max_planning_time'",
+    "flaky_detection": {
+      "error": "cannot access local variable 'enhanced_loop' where it is not associated with a value"
+    }
+  },
+  "android_in_wild_integration": {
+    "dataset_setup": {
+      "status": "success",
+      "path": "/tmp/android_in_wild_pxrw40re"
+    },
+    "selected_videos": [
+      "settings_wifi_toggle_001",
+      "bluetooth_pairing_002",
+      "brightness_adjustment_003",
+      "app_installation_004",
+      "notification_management_005"
+    ],
+    "analysis_results": [
+      {
+        "video_id": "settings_wifi_toggle_001",
+        "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+        "accuracy_score": 0.0,
+        "robustness_score": 0.3,
+        "generalization_score": 0.0,
+        "agent_status": "error"
+      },
+      {
+        "video_id": "bluetooth_pairing_002",
+        "task_prompt": "Enable Bluetooth and search for nearby devices",
+        "accuracy_score": 0.0,
+        "robustness_score": 0.3,
+        "generalization_score": 0.0,
+        "agent_status": "error"
+      },
+      {
+        "video_id": "brightness_adjustment_003",
+        "task_prompt": "Adjust screen brightness using quick settings",
+        "accuracy_score": 0.0,
+        "robustness_score": 0.3,
+        "generalization_score": 0.0,
+        "agent_status": "error"
+      },
+      {
+        "video_id": "app_installation_004",
+        "task_prompt": "Install a calculator app from the Play Store",
+        "accuracy_score": 0.0,
+        "robustness_score": 0.3,
+        "generalization_score": 0.0,
+        "agent_status": "error"
+      },
+      {
+        "video_id": "notification_management_005",
+        "task_prompt": "Manage notification settings for an app",
+        "accuracy_score": 0.0,
+        "robustness_score": 0.3,
+        "generalization_score": 0.0,
+        "agent_status": "error"
+      }
+    ],
+    "evaluation": {
+      "aggregate_metrics": {
+        "total_videos_analyzed": 5,
+        "average_accuracy": 0.0,
+        "average_robustness": 0.3,
+        "average_generalization": 0.0,
+        "overall_performance": 0.1
+      },
+      "strengths": [],
+      "weaknesses": [
+        "Low accuracy in task reproduction",
+        "Inconsistent robustness across scenarios",
+        "Poor generalization to diverse UI patterns"
+      ],
+      "recommendations": [
+        "Improve element detection accuracy in the Executor Agent",
+        "Enhance UI parsing strategies for complex layouts",
+        "Implement more robust retry mechanisms",
+        "Add better error recovery strategies",
+        "Train agents on more diverse UI patterns",
+        "Improve semantic understanding in the Planner Agent",
+        "Investigate common failure patterns and add specific handling"
+      ],
+      "detailed_results": [
+        {
+          "video_id": "settings_wifi_toggle_001",
+          "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+          "accuracy": 0.0,
+          "robustness": 0.3,
+          "generalization": 0.0,
+          "agent_status": "error"
+        },
+        {
+          "video_id": "bluetooth_pairing_002",
+          "task_prompt": "Enable Bluetooth and search for nearby devices",
+          "accuracy": 0.0,
+          "robustness": 0.3,
+          "generalization": 0.0,
+          "agent_status": "error"
+        },
+        {
+          "video_id": "brightness_adjustment_003",
+          "task_prompt": "Adjust screen brightness using quick settings",
+          "accuracy": 0.0,
+          "robustness": 0.3,
+          "generalization": 0.0,
+          "agent_status": "error"
+        },
+        {
+          "video_id": "app_installation_004",
+          "task_prompt": "Install a calculator app from the Play Store",
+          "accuracy": 0.0,
+          "robustness": 0.3,
+          "generalization": 0.0,
+          "agent_status": "error"
+        },
+        {
+          "video_id": "notification_management_005",
+          "task_prompt": "Manage notification settings for an app",
+          "accuracy": 0.0,
+          "robustness": 0.3,
+          "generalization": 0.0,
+          "agent_status": "error"
+        }
+      ]
+    },
+    "status": "success"
+  },
+  "overall_assessment": {
+    "component_health": {
+      "score": 0.0,
+      "status": "issues_detected",
+      "passing_components": 0,
+      "total_components": 4
+    },
+    "flaky_behavior_status": {},
+    "android_in_wild_status": {
+      "score": 0.1,
+      "status": "needs_improvement",
+      "videos_analyzed": 5,
+      "average_accuracy": 0.0,
+      "average_robustness": 0.3,
+      "average_generalization": 0.0
+    },
+    "recommendations": [
+      "Fix failing agent components",
+      "Implement additional stability improvements",
+      "Improve real-world scenario handling"
+    ],
+    "overall_score": 0.03
+  }
+}

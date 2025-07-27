@@ -1,0 +1,25 @@
+{
+  "analysis_results": [
+    {
+      "video_id": "settings_wifi_toggle_001",
+      "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+      "accuracy_score": 0.25,
+      "robustness_score": 1.0,
+      "generalization_score": 0.28508897781372067,
+      "comparison_metrics": {
+        "accuracy": 0.25,
+        "robustness": 1.0,
+        "generalization": 0.28508897781372067,
+        "overall": 0.48552669334411624
+      },
+      "agent_result": {
+        "status": "success",
+        "goal": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+        "completed_subgoals": [
+          "Open Settings"
+        ],
+        "failed_subgoals": [],
+        "success_rate": 1.0,
+        "execution_time": 1.501779556274414,
+        "iterations": 1,
+        "planning_result": 
