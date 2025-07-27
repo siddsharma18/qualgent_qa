@@ -1,0 +1,46 @@
+{
+  "analysis_results": [
+    {
+      "video_id": "settings_wifi_toggle_001",
+      "task_prompt": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+      "accuracy_score": 0.25,
+      "robustness_score": 1.0,
+      "generalization_score": 0.2850874400138855,
+      "comparison_metrics": {
+        "accuracy": 0.25,
+        "robustness": 1.0,
+        "generalization": 0.2850874400138855,
+        "overall": 0.48552623200416567
+      },
+      "agent_result": {
+        "status": "success",
+        "goal": "Complete the following sequence: Open Settings app -> Navigate to Wi-Fi settings -> Toggle Wi-Fi switch -> Wait for Wi-Fi state change",
+        "completed_subgoals": [
+          "Open Settings"
+        ],
+        "failed_subgoals": [],
+        "success_rate": 1.0,
+        "execution_time": 1.50174880027771,
+        "iterations": 1,
+        "planning_result": {
+          "status": "PlanningStatus.SUCCESS",
+          "subgoals": [
+            {
+              "name": "Open Settings",
+              "description": "Navigate to the Settings application",
+              "priority": 1,
+              "confidence": 0.9
+            }
+          ],
+          "total_estimated_duration": 2.0,
+          "planning_time": 6.961822509765625e-05,
+          "strategies_used": [
+            "_semantic_planning",
+            "_adaptive_planning",
+            "_fallback_planning"
+          ],
+          "confidence": 0.9,
+          "plan_complexity": "low",
+          "alternative_plans": [
+            [
+              
