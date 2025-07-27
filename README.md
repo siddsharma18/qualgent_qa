@@ -383,4 +383,4 @@ For support and questions:
 1. Check the documentation
 2. Review the test examples
 3. Open an issue on GitHub
-4. Contact the development team
+4. Contact sharma.siddharth@outlook.in
